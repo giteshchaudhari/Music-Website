@@ -1,0 +1,63 @@
+{%extends 'account/base.html'%}
+{% block albums_active %}active{% endblock %}
+{%block content%}
+<div class="container-fluid songs-container">
+    <div class="row">
+        <div class="col-sm-8 col-md-9">
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    <h3>All Songs</h3>
+
+                    {% if error_message %}
+                        <p><strong>{{ error_message }}</strong></p>
+                    {% endif %}
+
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Artist</th>
+                            <th>Audio File</th>
+                            <th>Favorite</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for geet in database %}
+                            <tr>
+                                <td>{{ geet.title }}</td>
+                                <td>{{geet.artist}}</td>
+                                <td>
+                                    <a target="_blank" href="{{ geet.track.url }}">
+                                        <button type="button" class="btn btn-success btn-xs">
+                                            <span class="glyphicon glyphicon-play"></span>&nbsp; Play
+                                        </button>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{% url 'song:geet_fav' pk=geet.pk %}" class="btn-favorite"><span class="glyphicon glyphicon-star {% if geet.is_favorite %}active{% endif %}"></span></a>
+                                </td> 
+                                <td>
+                                    <form action="{% url 'song:geet_delete' pk=geet.pk %}" method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="song_id" value="{{ geet.pk }}" />
+                                        <button type="submit" class="btn btn-danger btn-xs">
+                                            <span class="glyphicon glyphicon-remove"></span>&nbsp; Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+{%endblock%}
